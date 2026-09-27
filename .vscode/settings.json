@@ -1,0 +1,4 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/Courses/Building with the Claude API/.venv/Scripts/python.exe",
+  "python-envs.defaultEnvManager": "ms-python.python:system"
+}

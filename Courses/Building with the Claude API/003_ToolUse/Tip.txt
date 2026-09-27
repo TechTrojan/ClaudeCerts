@@ -1,0 +1,17 @@
+
+1. Generate valid JSON schema
+
+use any LLM with below prompt 
+"""
+
+Write a valid JSON schema spec for the purpose of tool calling for this function.
+Follow the best practices listed in the given link
+<link>
+https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
+</link>
+
+<tool_function_definition>
+
+</tool_function_definition>
+
+"""

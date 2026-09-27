@@ -1,0 +1,7 @@
+.env
+.env.*
+venv/
+.venv/
+__pycache__/
+*.pyc
+Docs/Your Anthropic, PBC receipt \[#1227-6121].pdf

@@ -1,0 +1,56 @@
+[
+  {
+    "task": "Parse an AWS S3 bucket name from an S3 URI (e.g., 's3://my-bucket/path/to/file.txt') and extract only the bucket name",
+    "output": "\nimport re\n\ndef extract_s3_bucket(s3_uri):\n    match = re.match(r's3://([^/]+)', s3_uri)\n    return match.group(1) if match else None\n",
+    "reasoning": "The solution correctly solves the stated task with a well-constructed regex pattern. The core logic is sound and handles the basic happy path and malformed URIs appropriately. However, it lacks defensive programming for edge cases like None inputs and could be more robust by documenting expected inputs. For a production AWS utility, consider adding input validation and supporting alternative S3 URI schemes.",
+    "strengths": [
+      "Correctly uses regex pattern to match S3 URI format and extract bucket name",
+      "Handles edge cases gracefully by returning None when URI doesn't match expected format",
+      "Simple, readable, and efficient implementation with minimal dependencies"
+    ],
+    "weaknesses": [
+      "No input validation for None/empty string inputs, which would raise AttributeError",
+      "Lacks docstring/comments explaining function purpose and parameters",
+      "No handling of S3A protocol (s3a://) or other S3-compatible URI variants that may be encountered in big data frameworks"
+    ],
+    "syntax_score ": 10,
+    "model_score": 7,
+    "score": 8.5
+  },
+  {
+    "task": "Create a JSON CloudFormation template snippet that defines an AWS Lambda function with basic properties including function name, runtime, and IAM role ARN",
+    "output": "\n{\n  \"MyLambdaFunction\": {\n    \"Type\": \"AWS::Lambda::Function\",\n    \"Properties\": {\n      \"FunctionName\": \"my-lambda-function\",\n      \"Runtime\": \"python3.11\",\n      \"Role\": \"arn:aws:iam::123456789012:role/lambda-execution-role\",\n      \"Handler\": \"index.handler\",\n      \"Code\": {\n        \"ZipFile\": \"def handler(event, context):\\n    return {'statusCode': 200, 'body': 'Hello from Lambda'}\\n\"\n      }\n    }\n  }\n}\n",
+    "reasoning": "The solution meets the core task requirements by defining a valid Lambda function with the specified basic properties. However, it lacks best practices for production use, particularly around parameterization of the hardcoded account ID and omission of important operational properties. The inline code is functional but doesn't reflect realistic scenarios.",
+    "strengths": [
+      "Correctly implements all required basic properties: FunctionName, Runtime, Role, and Handler are properly configured",
+      "Valid CloudFormation JSON syntax with proper resource type and structure",
+      "Includes functional Code property with inline Python handler, making the template immediately usable"
+    ],
+    "weaknesses": [
+      "Hardcoded AWS account ID (123456789012) in IAM role ARN should use CloudFormation intrinsic functions or parameters for reusability",
+      "Missing recommended properties like Description, Timeout, and MemorySize that improve operational visibility and prevent defaults from being insufficient",
+      "No error handling in the Lambda function code; the inline handler is overly simplistic and doesn't demonstrate best practices"
+    ],
+    "syntax_score ": 10,
+    "model_score": 7,
+    "score": 8.5
+  },
+  {
+    "task": "Write a Python function that takes an AWS IAM policy JSON string and returns a list of all Action statements (e.g., 's3:GetObject', 'dynamodb:Query')",
+    "output": "\nimport json\nimport re\n\ndef extract_iam_actions(policy_json_string: str) -> list[str]:\n    try:\n        policy = json.loads(policy_json_string)\n    except json.JSONDecodeError:\n        return []\n    \n    actions = []\n    \n    if isinstance(policy, dict):\n        statements = policy.get('Statement', [])\n        if not isinstance(statements, list):\n            statements = [statements]\n        \n        for statement in statements:\n            if isinstance(statement, dict):\n                action = statement.get('Action', [])\n                \n                if isinstance(action, str):\n                    actions.append(action)\n                elif isinstance(action, list):\n                    actions.extend(action)\n    \n    return actions\n",
+    "reasoning": "The solution correctly implements the core requirement of extracting Action statements from IAM policy JSON. It handles the two standard formats (string and list) and includes basic error handling. However, the unused regex import suggests incomplete implementation, and the function lacks comprehensive coverage of IAM policy variations like wildcard actions and NotAction statements. For a production AWS code reviewer function, these omissions represent meaningful gaps in completeness.",
+    "strengths": [
+      "Correctly handles both string and list formats for Action statements, matching AWS IAM policy specification",
+      "Implements proper error handling for invalid JSON with try-except block",
+      "Clean, readable code with appropriate type hints and variable naming"
+    ],
+    "weaknesses": [
+      "Unused import: 're' module is imported but never used in the function",
+      "Does not handle wildcard actions like 's3:*' or '*' that are common in IAM policies",
+      "Missing support for NotAction statements, which are valid IAM policy elements that should also be extracted"
+    ],
+    "syntax_score ": 10,
+    "model_score": 7,
+    "score": 8.5
+  }
+]
